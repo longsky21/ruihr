@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #1e3a8a;  /* Deep Blue */
+  --color-bg: #f8fafc;      /* Light Gray */
+  --color-accent: #c00000;  /* Red from Logo */
+  --color-text: #0f172a;    /* Dark Text */
+
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+}
+
+.btn-primary {
+  @apply bg-primary text-white px-4 py-2 rounded hover:opacity-90 transition-opacity;
+}
+
+.btn-accent {
+  @apply bg-accent text-white px-4 py-2 rounded hover:opacity-90 transition-opacity;
+}
