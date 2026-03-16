@@ -1,7 +1,13 @@
 import csv
 import logging
 from sqlalchemy.orm import Session
-from ..models import Department, Employee, EmployeeContact, EmployeePosition, User, AttendanceRecord
+import sys
+import os
+
+# Add backend directory to Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from models import Department, Employee, EmployeeContact, EmployeePosition, User, AttendanceRecord
 from datetime import datetime
 
 logger = logging.getLogger(__name__)

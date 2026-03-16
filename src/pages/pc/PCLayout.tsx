@@ -4,6 +4,7 @@ import {
   TeamOutlined,
   UserOutlined,
   ApartmentOutlined,
+  CalendarOutlined,
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   LogoutOutlined,
@@ -23,19 +24,6 @@ const PCLayout: React.FC = () => {
     logout();
     navigate('/login');
   };
-
-  const userMenu = (
-    <Menu
-      items={[
-        {
-          key: 'logout',
-          icon: <LogoutOutlined />,
-          label: '退出登录',
-          onClick: handleLogout,
-        },
-      ]}
-    />
-  );
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -62,6 +50,11 @@ const PCLayout: React.FC = () => {
               icon: <TeamOutlined />,
               label: '员工管理',
             },
+            {
+              key: '/pc/attendance',
+              icon: <CalendarOutlined />,
+              label: '考勤管理',
+            },
           ]}
         />
       </Sider>
@@ -74,7 +67,16 @@ const PCLayout: React.FC = () => {
           
           <div className="flex items-center gap-4">
             <span className="text-gray-600">欢迎, {user?.username}</span>
-            <Dropdown overlay={userMenu} placement="bottomRight">
+            <Dropdown menu={{
+              items: [
+                {
+                  key: 'logout',
+                  icon: <LogoutOutlined />,
+                  label: '退出登录',
+                  onClick: handleLogout,
+                },
+              ]
+            }} placement="bottomRight">
               <Avatar icon={<UserOutlined />} className="cursor-pointer bg-primary" />
             </Dropdown>
           </div>

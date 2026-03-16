@@ -1,6 +1,12 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Text, Enum, DateTime, Date, DECIMAL, Index
 from sqlalchemy.orm import relationship
-from .database import Base
+import sys
+import os
+
+# Add backend directory to Python path
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+from database import Base
 from datetime import datetime
 import enum
 
@@ -96,7 +102,7 @@ class Employee(Base):
     employee_no = Column(String(50), unique=True, index=True)
     name = Column(String(100), index=True)
     english_name = Column(String(100))
-    status = Column(String(20), default="active") # 在职, 离职
+    status = Column(Integer, default=1) # 1: 在职, 0: 离职
     department_id = Column(Integer, ForeignKey("departments.id"))
     
     gender = Column(String(10))

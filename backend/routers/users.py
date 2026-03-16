@@ -1,6 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from .. import models, schemas, crud, database, auth
+import sys
+import os
+
+# Add backend directory to Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import models, schemas, crud, database, auth
 from typing import List
 
 router = APIRouter(

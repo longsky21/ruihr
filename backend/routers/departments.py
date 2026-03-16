@@ -1,7 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List, Any
-from .. import models, schemas, database
+import sys
+import os
+
+# Add backend directory to Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import models, schemas, database, crud
 
 router = APIRouter(
     prefix="/departments",
@@ -18,6 +24,10 @@ def build_tree(depts):
         "code": dept.code,
         "manager_name": dept.manager_name,
         "level": dept.level,
+        "status": dept.status,
+        "category": dept.category,
+        "established_date": dept.established_date.isoformat() if dept.established_date else None,
+        "description": dept.description,
         "children": []
     } for dept in depts}
     
@@ -38,6 +48,20 @@ def get_department_tree(db: Session = Depends(database.get_db)):
 @router.get("/", response_model=List[schemas.Department])
 def get_departments(db: Session = Depends(database.get_db)):
     return db.query(models.Department).all()
+
+@router.post("/", response_model=schemas.Department)
+def create_department(dept: schemas.DepartmentCreate, db: Session = Depends(database.get_db)):
+    try:
+        return crud.create_department(db, dept)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.put("/{department_id}", response_model=schemas.Department)
+def update_department(department_id: int, dept_update: schemas.DepartmentUpdate, db: Session = Depends(database.get_db)):
+    db_dept = crud.update_department(db, department_id, dept_update)
+    if not db_dept:
+        raise HTTPException(status_code=404, detail="Department not found")
+    return db_dept
 
 @router.put("/{department_id}/move", response_model=schemas.Department)
 def move_department(department_id: int, move_data: schemas.DepartmentMove, db: Session = Depends(database.get_db)):

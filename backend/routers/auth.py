@@ -1,7 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from .. import models, schemas, auth, database, crud
+import sys
+import os
+
+# Add backend directory to Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import models, schemas, auth, database, crud
 from datetime import timedelta
 
 router = APIRouter()

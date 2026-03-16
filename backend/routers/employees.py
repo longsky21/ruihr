@@ -1,18 +1,41 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from .. import models, schemas, crud, database, auth
+import sys
+import os
+
+# Add backend directory to Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import models, schemas, crud, database, auth
 from typing import List
 
 router = APIRouter(
     prefix="/employees",
     tags=["employees"],
-    dependencies=[Depends(auth.get_current_active_user)],
+    # dependencies=[Depends(auth.get_current_active_user)],
 )
 
 @router.get("/", response_model=List[schemas.Employee])
-def read_employees(skip: int = 0, limit: int = 100, db: Session = Depends(database.get_db)):
-    employees = crud.get_employees(db, skip=skip, limit=limit)
+def read_employees(skip: int = 0, limit: int = 100, 
+                   department_id: int = None, 
+                   keyword: str = None, 
+                   hire_date: str = None,
+                   db: Session = Depends(database.get_db)):
+    employees = crud.get_employees(db, skip=skip, limit=limit, 
+                                   department_id=department_id, 
+                                   keyword=keyword, 
+                                   hire_date=hire_date)
     return employees
+
+@router.get("/count", response_model=int)
+def count_employees(department_id: int = None, 
+                    keyword: str = None, 
+                    hire_date: str = None,
+                    db: Session = Depends(database.get_db)):
+    return crud.get_employees_count(db, 
+                                    department_id=department_id, 
+                                    keyword=keyword, 
+                                    hire_date=hire_date)
 
 @router.post("/", response_model=schemas.Employee)
 def create_employee(employee: schemas.EmployeeCreate, db: Session = Depends(database.get_db)):

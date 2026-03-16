@@ -5,7 +5,13 @@ import bcrypt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-from . import models, schemas, database
+import sys
+import os
+
+# Add backend directory to Python path
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+import models, schemas, database
 import os
 
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-please-change-it")

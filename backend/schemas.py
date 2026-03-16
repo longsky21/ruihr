@@ -30,11 +30,35 @@ class DepartmentBase(BaseModel):
     parent_id: Optional[int] = None
     code: Optional[str] = None
     path: Optional[str] = None
-    level: int = 1
+    level: Optional[int] = None
     manager_name: Optional[str] = None
+    manager_phone: Optional[str] = None
+    category: Optional[str] = None
+    is_virtual: bool = False
+    location: Optional[str] = None
+    cost_center: Optional[str] = None
+    description: Optional[str] = None
+    remark: Optional[str] = None
+    status: str = "active"
+    established_date: Optional[date] = None
 
 class DepartmentCreate(DepartmentBase):
     pass
+
+class DepartmentUpdate(BaseModel):
+    name: Optional[str] = None
+    parent_id: Optional[int] = None
+    code: Optional[str] = None
+    manager_name: Optional[str] = None
+    manager_phone: Optional[str] = None
+    category: Optional[str] = None
+    is_virtual: Optional[bool] = None
+    location: Optional[str] = None
+    cost_center: Optional[str] = None
+    description: Optional[str] = None
+    remark: Optional[str] = None
+    status: Optional[str] = None
+    established_date: Optional[date] = None
 
 class DepartmentMove(BaseModel):
     new_parent_id: Optional[int] = None
@@ -58,6 +82,11 @@ class EmployeeContactBase(BaseModel):
 
 class EmployeeContact(EmployeeContactBase):
     id: int
+    wechat: Optional[str] = None
+    contact_address: Optional[str] = None
+    home_address: Optional[str] = None
+    emergency_contact_name: Optional[str] = None
+    emergency_contact_phone: Optional[str] = None
     class Config:
         from_attributes = True
 
@@ -69,27 +98,113 @@ class EmployeePositionBase(BaseModel):
 
 class EmployeePosition(EmployeePositionBase):
     id: int
+    employment_type: Optional[str] = None
+    contract_company: Optional[str] = None
+    contract_type: Optional[str] = None
+    probation_months: Optional[int] = None
+    probation_end_date: Optional[date] = None
+    probation_status: Optional[str] = None
+    contract_start_date: Optional[date] = None
+    contract_end_date: Optional[date] = None
+    work_location: Optional[str] = None
     class Config:
         from_attributes = True
 
 class EmployeeBase(BaseModel):
     employee_no: Optional[str] = None
     name: str
-    gender: Optional[str] = None
+    english_name: Optional[str] = None
+    status: int = 1
     department_id: Optional[int] = None
-    status: str = "active"
+    
+    gender: Optional[str] = None
+    birthday: Optional[date] = None
+    id_card_type: Optional[str] = None
+    id_card_no: Optional[str] = None
+    
+    nationality: Optional[str] = None
+    hukou_type: Optional[str] = None
+    hukou_location: Optional[str] = None
+    native_place: Optional[str] = None
+    marital_status: Optional[str] = None
+    political_status: Optional[str] = None
+    education: Optional[str] = None
+    avatar: Optional[str] = None
 
 class EmployeeCreate(EmployeeBase):
     phone: Optional[str] = None # Added for creation convenience
-    pass
+    email: Optional[str] = None
+    work_phone: Optional[str] = None
+    work_email: Optional[str] = None
+    wechat: Optional[str] = None
+    contact_address: Optional[str] = None
+    home_address: Optional[str] = None
+    emergency_contact_name: Optional[str] = None
+    emergency_contact_phone: Optional[str] = None
+    
+    position_title: Optional[str] = None
+    job_title: Optional[str] = None
+    job_level: Optional[str] = None
+    hire_date: Optional[date] = None
+    employment_type: Optional[str] = None
+    contract_company: Optional[str] = None
+    contract_type: Optional[str] = None
+    probation_months: Optional[int] = None
+    probation_end_date: Optional[date] = None
+    probation_status: Optional[str] = None
+    contract_start_date: Optional[date] = None
+    contract_end_date: Optional[date] = None
+    work_location: Optional[str] = None
+
+class EmployeeContactUpdate(BaseModel):
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    work_phone: Optional[str] = None
+    work_email: Optional[str] = None
+    wechat: Optional[str] = None
+    contact_address: Optional[str] = None
+    home_address: Optional[str] = None
+    emergency_contact_name: Optional[str] = None
+    emergency_contact_phone: Optional[str] = None
+
+class EmployeePositionUpdate(BaseModel):
+    position_title: Optional[str] = None
+    job_title: Optional[str] = None
+    job_level: Optional[str] = None
+    hire_date: Optional[date] = None
+    employment_type: Optional[str] = None
+    contract_company: Optional[str] = None
+    contract_type: Optional[str] = None
+    probation_months: Optional[int] = None
+    probation_end_date: Optional[date] = None
+    probation_status: Optional[str] = None
+    contract_start_date: Optional[date] = None
+    contract_end_date: Optional[date] = None
+    work_location: Optional[str] = None
 
 class EmployeeUpdate(BaseModel):
+    employee_no: Optional[str] = None
     name: Optional[str] = None
-    gender: Optional[str] = None
+    english_name: Optional[str] = None
+    status: Optional[int] = None
     department_id: Optional[int] = None
-    status: Optional[str] = None
-    contact: Optional[EmployeeContactBase] = None
-    position_info: Optional[EmployeePositionBase] = None
+    
+    gender: Optional[str] = None
+    birthday: Optional[date] = None
+    id_card_type: Optional[str] = None
+    id_card_no: Optional[str] = None
+    
+    nationality: Optional[str] = None
+    hukou_type: Optional[str] = None
+    hukou_location: Optional[str] = None
+    native_place: Optional[str] = None
+    marital_status: Optional[str] = None
+    political_status: Optional[str] = None
+    education: Optional[str] = None
+    avatar: Optional[str] = None
+    
+    contact: Optional[EmployeeContactUpdate] = None
+    position_info: Optional[EmployeePositionUpdate] = None
 
 class Employee(EmployeeBase):
     id: int
@@ -104,6 +219,8 @@ class Employee(EmployeeBase):
     
     class Config:
         from_attributes = True
+
+# Extended schemas for full employee details
 
 class EmployeeTransferBase(BaseModel):
     transfer_type: str
