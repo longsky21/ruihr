@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Table, DatePicker, Select, Button, Spin, message } from 'antd';
+import { Table, DatePicker, Select, Button, Spin, message, Breadcrumb } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import api from '../../../lib/api';
+import dayjs from 'dayjs';
 
 const { Option } = Select;
 
@@ -45,6 +46,7 @@ const Report: React.FC = () => {
       const response = await api.get('/attendance/report', { params });
       setData(response.data);
     } catch (error) {
+      console.error(error);
       message.error('获取考勤报表失败');
     } finally {
       setLoading(false);
@@ -112,13 +114,21 @@ const Report: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="p-4">
+      <Breadcrumb
+        items={[
+          { title: '考勤管理' },
+          { title: '考勤月报' },
+        ]}
+        className="mb-4"
+      />
       <div className="mb-4 flex flex-wrap gap-2 items-center justify-between">
         <div className="flex flex-wrap gap-2">
           <DatePicker
             picker="month"
-            value={month ? new Date(month + '-01') : null}
-            onChange={(date) => date && setMonth(date.toISOString().slice(0, 7))}
+            defaultValue={dayjs(month)}
+            onChange={(date, dateString) => setMonth(typeof dateString === 'string' ? dateString : dateString[0])}
+            allowClear={false}
             style={{ width: 200 }}
           />
           <Select
@@ -147,7 +157,12 @@ const Report: React.FC = () => {
           columns={columns}
           dataSource={data}
           rowKey="employee_id"
-          pagination={{ pageSize: 20 }}
+          pagination={{
+            defaultPageSize: 10,
+            pageSizeOptions: ['10', '50', '100'],
+            showSizeChanger: true,
+            showTotal: (total) => `共 ${total} 条`,
+          }}
           scroll={{ x: 1200 }}
         />
       </Spin>

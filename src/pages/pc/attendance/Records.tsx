@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Table, DatePicker, Select, Input, Button, Spin, message } from 'antd';
+import { Table, DatePicker, Select, Input, Button, Spin, message, Breadcrumb } from 'antd';
 import { SearchOutlined, DownloadOutlined } from '@ant-design/icons';
 import api from '../../../lib/api';
+import dayjs from 'dayjs';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -51,7 +52,7 @@ const Records: React.FC = () => {
       if (filters.employee_id) {
         params.employee_id = filters.employee_id;
       }
-      if (filters.dateRange) {
+      if (filters.dateRange && filters.dateRange[0] && filters.dateRange[1]) {
         params.start_date = filters.dateRange[0].format('YYYY-MM-DD');
         params.end_date = filters.dateRange[1].format('YYYY-MM-DD');
       }
@@ -62,6 +63,7 @@ const Records: React.FC = () => {
       const response = await api.get('/attendance/records', { params });
       setData(response.data);
     } catch (error) {
+      console.error(error);
       message.error('获取打卡记录失败');
     } finally {
       setLoading(false);
@@ -120,8 +122,16 @@ const Records: React.FC = () => {
   ];
 
   return (
-    <div>
-      <div className="mb-4 flex flex-wrap gap-2 items-center justify-between">
+    <div className="p-4">
+      <Breadcrumb
+        items={[
+          { title: '考勤管理' },
+          { title: '打卡记录' },
+        ]}
+        className="mb-4"
+      />
+
+      <div className="mb-4 flex flex-wrap gap-4 items-center justify-between">
         <div className="flex flex-wrap gap-2">
           <Select
             placeholder="选择员工"
@@ -170,7 +180,12 @@ const Records: React.FC = () => {
           columns={columns}
           dataSource={data}
           rowKey="id"
-          pagination={{ pageSize: 20 }}
+          pagination={{
+            defaultPageSize: 10,
+            pageSizeOptions: ['10', '50', '100'],
+            showSizeChanger: true,
+            showTotal: (total) => `共 ${total} 条`,
+          }}
           scroll={{ x: 1000 }}
         />
       </Spin>

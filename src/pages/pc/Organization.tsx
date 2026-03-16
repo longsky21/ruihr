@@ -19,11 +19,14 @@ interface Department {
   status?: string;
   category?: string;
   established_date?: string;
+  location?: number; // Office Location ID
+  office_location?: { name: string }; // Expanded Office Location
 }
 
 const Organization: React.FC = () => {
   const [treeData, setTreeData] = useState<Department[]>([]);
   const [loading, setLoading] = useState(false);
+  const [officeLocations, setOfficeLocations] = useState<{id: number, name: string}[]>([]); // Store locations for select
   const [importing, setImporting] = useState(false);
   const [selectedDept, setSelectedDept] = useState<Department | null>(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -65,8 +68,18 @@ const Organization: React.FC = () => {
     }
   };
 
+  const fetchLocations = async () => {
+    try {
+      const res = await api.get('/office-locations/');
+      setOfficeLocations(res.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     fetchTree();
+    fetchLocations();
   }, []);
 
   const handleImport = async () => {
@@ -346,6 +359,13 @@ const Organization: React.FC = () => {
               </Form.Item>
               <Form.Item label="设立日期" name="established_date">
                 <DatePicker style={{ width: '100%' }} />
+              </Form.Item>
+              <Form.Item label="工作地点" name="location">
+                <Select placeholder="请选择办公地点" allowClear>
+                  {officeLocations.map(loc => (
+                    <Select.Option key={loc.id} value={loc.id}>{loc.name}</Select.Option>
+                  ))}
+                </Select>
               </Form.Item>
               <Form.Item label="描述" name="description">
                 <Input.TextArea rows={4} />

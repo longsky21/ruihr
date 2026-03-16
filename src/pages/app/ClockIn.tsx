@@ -25,6 +25,7 @@ export default function ClockIn() {
   
   // Clock state
   const [location, setLocation] = useState<Location | null>(null);
+  const [officeLocation, setOfficeLocation] = useState<{name: string, distance: number, valid: boolean} | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -48,6 +49,56 @@ export default function ClockIn() {
     }
   }, [activeTab, currentMonth]); // Fetch when month changes
 
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const R = 6371e3; // metres
+    const φ1 = lat1 * Math.PI/180; // φ, λ in radians
+    const φ2 = lat2 * Math.PI/180;
+    const Δφ = (lat2-lat1) * Math.PI/180;
+    const Δλ = (lon2-lon1) * Math.PI/180;
+
+    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ/2) * Math.sin(Δλ/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    const d = R * c; // in metres
+    return d;
+  }
+
+  const checkOfficeLocation = async (lat: number, lon: number) => {
+      if (!user) return;
+      try {
+          const empRes = await api.get('/employees');
+          const myEmployee = empRes.data.find((e: any) => e.user_id === user.id);
+          
+          if (myEmployee && myEmployee.office_location) {
+              const office = myEmployee.office_location;
+              const distance = calculateDistance(lat, lon, office.latitude, office.longitude);
+              const isValid = distance <= office.radius;
+              
+              setOfficeLocation({
+                  name: office.name,
+                  distance: distance,
+                  valid: isValid
+              });
+              
+              if (!isValid) {
+                  setError(`未进入考勤范围 (${office.name})`);
+              }
+          } else {
+              // No office location assigned, assume valid or handle differently
+              // For now, let's assume valid if no location assigned
+              setOfficeLocation({
+                  name: '未知区域',
+                  distance: 0,
+                  valid: true
+              });
+          }
+      } catch (err) {
+          console.error(err);
+      }
+  }
+
   const getLocation = () => {
     setLoading(true);
     setError(null);
@@ -59,10 +110,13 @@ export default function ClockIn() {
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
         setLocation({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
+          latitude: lat,
+          longitude: lon,
         });
+        checkOfficeLocation(lat, lon);
         setLoading(false);
       },
       (err) => {
@@ -98,6 +152,15 @@ export default function ClockIn() {
 
   const handleClockIn = async () => {
     if (!location || !user || loading || success) return;
+    
+    // Check validity
+    if (officeLocation && !officeLocation.valid) {
+        // Can still clock in but it will be invalid, or maybe prevent it?
+        // User requirement: "开启定位未在有效打卡区域，按钮绿色可以打卡，但记录无效"
+        // So we proceed, but mark as invalid or valid=false in backend? 
+        // Backend models.AttendanceRecord has is_valid field.
+        // Let's assume we proceed.
+    }
 
     try {
       setLoading(true);
@@ -122,7 +185,7 @@ export default function ClockIn() {
         wifi_name: '',
         source: 'H5',
         source_description: 'H5',
-        is_valid: true
+        is_valid: officeLocation ? officeLocation.valid : true
       });
 
       setSuccess(`已成功${getClockType()} ${format(new Date(), 'HH:mm:ss')}`);
@@ -204,7 +267,9 @@ export default function ClockIn() {
                         ? "bg-gradient-to-br from-green-400 to-green-600 shadow-green-500/40 border-green-100/30" 
                         : (!location || loading) 
                             ? "bg-gray-200 border-gray-300 cursor-not-allowed shadow-none" 
-                            : "bg-gradient-to-br from-blue-500 to-blue-600 shadow-blue-500/40 border-blue-100/30 hover:shadow-blue-500/60"
+                            : (officeLocation && !officeLocation.valid)
+                                ? "bg-gradient-to-br from-green-400 to-green-600 shadow-green-500/40 border-green-100/30" // Green for invalid location but possible to punch
+                                : "bg-gradient-to-br from-blue-500 to-blue-600 shadow-blue-500/40 border-blue-100/30 hover:shadow-blue-500/60"
                 )}
             >
                 {loading ? (
@@ -240,7 +305,7 @@ export default function ClockIn() {
                     "absolute bottom-8 text-xs font-medium tracking-widest uppercase opacity-0 transform translate-y-2 transition-all duration-500 delay-100",
                     !loading && location && !success && "opacity-100 translate-y-0 animate-pulse text-white/60"
                 )}>
-                    点击打卡
+                    {officeLocation && !officeLocation.valid ? '外勤打卡' : '点击打卡'}
                 </div>
                 
                 {success && (

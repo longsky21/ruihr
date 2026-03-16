@@ -8,7 +8,7 @@ import os
 # Add backend directory to Python path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from routers import auth, users, employees, admin, departments, attendance
+from routers import auth, users, employees, admin, departments, attendance, office_locations
 
 load_dotenv()
 
@@ -40,6 +40,7 @@ app.include_router(users.router)
 app.include_router(employees.router)
 app.include_router(departments.router)
 app.include_router(attendance.router)
+app.include_router(office_locations.router)
 app.include_router(admin.router)
 
 @app.get("/")

@@ -81,7 +81,11 @@ class Department(Base):
     
     category = Column(String(50)) # 组织类别
     is_virtual = Column(Boolean, default=False)
-    location = Column(String(100))
+    
+    # Store office location ID instead of string name
+    location = Column(Integer, ForeignKey("office_locations.id"), nullable=True)
+    office_location = relationship("OfficeLocation", foreign_keys=[location])
+
     cost_center = Column(String(50))
     description = Column(Text)
     remark = Column(Text)
@@ -134,6 +138,23 @@ class Employee(Base):
     leave_requests = relationship("LeaveRequest", back_populates="employee")
     payrolls = relationship("Payroll", back_populates="employee")
     transfers = relationship("EmployeeTransfer", back_populates="employee")
+    office_location_id = Column(Integer, ForeignKey("office_locations.id"), nullable=True)
+    office_location = relationship("OfficeLocation", back_populates="employees")
+
+class OfficeLocation(Base):
+    __tablename__ = "office_locations"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), unique=True, index=True) # 办公地点名称
+    city = Column(String(50)) # 城市
+    address = Column(String(255)) # 详细地址
+    latitude = Column(DECIMAL(10, 6)) # 纬度
+    longitude = Column(DECIMAL(10, 6)) # 经度
+    radius = Column(Integer, default=500) # 有效打卡距离(米)
+    
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    employees = relationship("Employee", back_populates="office_location")
 
 class EmployeeTransfer(Base):
     __tablename__ = "employee_transfers"

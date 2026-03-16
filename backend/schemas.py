@@ -35,7 +35,7 @@ class DepartmentBase(BaseModel):
     manager_phone: Optional[str] = None
     category: Optional[str] = None
     is_virtual: bool = False
-    location: Optional[str] = None
+    location: Optional[int] = None # Now stores OfficeLocation ID
     cost_center: Optional[str] = None
     description: Optional[str] = None
     remark: Optional[str] = None
@@ -53,7 +53,7 @@ class DepartmentUpdate(BaseModel):
     manager_phone: Optional[str] = None
     category: Optional[str] = None
     is_virtual: Optional[bool] = None
-    location: Optional[str] = None
+    location: Optional[int] = None
     cost_center: Optional[str] = None
     description: Optional[str] = None
     remark: Optional[str] = None
@@ -65,6 +65,7 @@ class DepartmentMove(BaseModel):
 
 class Department(DepartmentBase):
     id: int
+    office_location: Optional['OfficeLocation'] = None # Include related office location
 
     class Config:
         from_attributes = True
@@ -206,6 +207,26 @@ class EmployeeUpdate(BaseModel):
     contact: Optional[EmployeeContactUpdate] = None
     position_info: Optional[EmployeePositionUpdate] = None
 
+class PayrollBase(BaseModel):
+    month: str
+    base_salary: float
+    bonus: float
+    deductions: float
+    net_salary: float
+    status: str
+
+class PayrollCreate(PayrollBase):
+    employee_id: int
+
+class Payroll(PayrollBase):
+    id: int
+    employee_id: int
+    created_at: datetime
+    updated_at: datetime
+
+    class Config:
+        from_attributes = True
+
 class Employee(EmployeeBase):
     id: int
     user_id: Optional[int] = None
@@ -216,7 +237,37 @@ class Employee(EmployeeBase):
     department: Optional[Department] = None
     contact: Optional[EmployeeContact] = None
     position_info: Optional[EmployeePosition] = None
-    
+    payrolls: Optional[List[Payroll]] = []
+    office_location_id: Optional[int] = None
+    office_location: Optional['OfficeLocation'] = None
+
+    class Config:
+        from_attributes = True
+
+class OfficeLocationBase(BaseModel):
+    name: str
+    city: Optional[str] = None
+    address: Optional[str] = None
+    latitude: float
+    longitude: float
+    radius: Optional[int] = 500
+
+class OfficeLocationCreate(OfficeLocationBase):
+    pass
+
+class OfficeLocationUpdate(BaseModel):
+    name: Optional[str] = None
+    city: Optional[str] = None
+    address: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    radius: Optional[int] = None
+
+class OfficeLocation(OfficeLocationBase):
+    id: int
+    created_at: datetime
+    updated_at: datetime
+
     class Config:
         from_attributes = True
 
@@ -283,21 +334,6 @@ class LeaveRequest(LeaveRequestBase):
 
     class Config:
         from_attributes = True
-
-class PayrollBase(BaseModel):
-    month: str
-    base_salary: float
-    bonus: float
-    deductions: float
-    net_salary: float
-    status: str
-
-class PayrollCreate(PayrollBase):
-    employee_id: int
-
-class Payroll(PayrollBase):
-    id: int
-    employee_id: int
     created_at: datetime
     updated_at: datetime
 

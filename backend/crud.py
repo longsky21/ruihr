@@ -166,6 +166,38 @@ def create_attendance(db: Session, attendance: schemas.AttendanceCreate):
 def get_attendance_records(db: Session, employee_id: int, skip: int = 0, limit: int = 100):
     return db.query(models.AttendanceRecord).filter(models.AttendanceRecord.employee_id == employee_id).offset(skip).limit(limit).all()
 
+def get_office_locations(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.OfficeLocation).offset(skip).limit(limit).all()
+
+def create_office_location(db: Session, location: schemas.OfficeLocationCreate):
+    db_location = models.OfficeLocation(**location.dict())
+    db.add(db_location)
+    db.commit()
+    db.refresh(db_location)
+    return db_location
+
+def update_office_location(db: Session, location_id: int, location: schemas.OfficeLocationUpdate):
+    db_location = db.query(models.OfficeLocation).filter(models.OfficeLocation.id == location_id).first()
+    if not db_location:
+        return None
+    
+    update_data = location.dict(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(db_location, key, value)
+    
+    db.commit()
+    db.refresh(db_location)
+    return db_location
+
+def delete_office_location(db: Session, location_id: int):
+    db_location = db.query(models.OfficeLocation).filter(models.OfficeLocation.id == location_id).first()
+    if not db_location:
+        return None
+    
+    db.delete(db_location)
+    db.commit()
+    return db_location
+
 def create_leave_request(db: Session, leave: schemas.LeaveRequestCreate, employee_id: int):
     db_leave = models.LeaveRequest(**leave.dict(), employee_id=employee_id)
     db.add(db_leave)

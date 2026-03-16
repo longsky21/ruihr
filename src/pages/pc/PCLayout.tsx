@@ -37,7 +37,7 @@ const PCLayout: React.FC = () => {
           theme="light"
           mode="inline"
           selectedKeys={[location.pathname]}
-          defaultOpenKeys={['/admin']}
+          defaultOpenKeys={['attendance']}
           onClick={({ key }) => navigate(key)}
           items={[
             {
@@ -51,9 +51,23 @@ const PCLayout: React.FC = () => {
               label: '员工管理',
             },
             {
-              key: '/pc/attendance',
+              key: 'attendance',
               icon: <CalendarOutlined />,
               label: '考勤管理',
+              children: [
+                {
+                  key: '/pc/attendance/records',
+                  label: '打卡记录',
+                },
+                {
+                  key: '/pc/attendance/report',
+                  label: '考勤月报',
+                },
+                {
+                  key: '/pc/attendance/locations',
+                  label: '打卡区域',
+                },
+              ],
             },
           ]}
         />

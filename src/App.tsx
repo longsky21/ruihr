@@ -25,9 +25,9 @@ import AppOA from './pages/app/OA';
 import PCLayout from './pages/pc/PCLayout';
 import Organization from './pages/pc/Organization';
 import Employees from './pages/pc/Employees';
-import AttendanceLayout from './pages/pc/attendance/AttendanceLayout';
 import Records from './pages/pc/attendance/Records';
 import Report from './pages/pc/attendance/Report';
+import OfficeLocations from './pages/pc/attendance/OfficeLocations';
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -57,11 +57,9 @@ export default function App() {
             <Route index element={<Navigate to="organization" replace />} />
             <Route path="organization" element={<Organization />} />
             <Route path="employees" element={<Employees />} />
-            <Route path="attendance" element={<AttendanceLayout />}>
-              <Route index element={<Navigate to="records" replace />} />
-              <Route path="records" element={<Records />} />
-              <Route path="report" element={<Report />} />
-            </Route>
+            <Route path="attendance/records" element={<Records />} />
+            <Route path="attendance/report" element={<Report />} />
+            <Route path="attendance/locations" element={<OfficeLocations />} />
           </Route>
 
           <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
