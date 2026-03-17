@@ -4,8 +4,8 @@ import { ConfigProvider } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
 import 'dayjs/locale/zh-cn';
 import dayjs from 'dayjs';
-import Login from './pages/Login';
-import AdminLogin from './pages/AdminLogin';
+import AppLogin from './pages/app/Login';
+import AdminLogin from './pages/admin/Login';
 import AdminLayout from './layouts/AdminLayout';
 import AppLayout from './layouts/AppLayout';
 import { useAuthStore } from './store/useAuthStore';
@@ -21,18 +21,26 @@ import AppProfile from './pages/app/Profile';
 import AppClockIn from './pages/app/ClockIn';
 import AppOA from './pages/app/OA';
 
-// PC Pages
-import PCLayout from './pages/pc/PCLayout';
-import Organization from './pages/pc/Organization';
-import Employees from './pages/pc/Employees';
-import Records from './pages/pc/attendance/Records';
-import Report from './pages/pc/attendance/Report';
-import OfficeLocations from './pages/pc/attendance/OfficeLocations';
+// PC Pages (now under /admin)
+import PCLayout from './pages/admin/PCLayout';
+import Organization from './pages/admin/Organization';
+import Employees from './pages/admin/Employees';
+import Records from './pages/admin/attendance/Records';
+import Report from './pages/admin/attendance/Report';
+import OfficeLocations from './pages/admin/attendance/OfficeLocations';
 
-const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
+const AppProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/app/login" replace />;
+  }
+  return children;
+};
+
+const AdminProtectedRoute = ({ children }: { children: JSX.Element }) => {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  if (!isAuthenticated) {
+    return <Navigate to="/admin/login" replace />;
   }
   return children;
 };
@@ -49,11 +57,18 @@ export default function App() {
     <ConfigProvider locale={zhCN}>
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          
+          {/* App Routes */}
+          <Route path="/app/login" element={<AppLogin />} />
+          <Route path="/app" element={<AppProtectedRoute><AppLayout /></AppProtectedRoute>}>
+            <Route index element={<Navigate to="clock-in" replace />} />
+            <Route path="clock-in" element={<AppClockIn />} />
+            <Route path="oa" element={<AppOA />} />
+            <Route path="profile" element={<AppProfile />} />
+          </Route>
+
           {/* Admin Routes */}
-          <Route path="/pc" element={<ProtectedRoute><PCLayout /></ProtectedRoute>}>
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminProtectedRoute><PCLayout /></AdminProtectedRoute>}>
             <Route index element={<Navigate to="organization" replace />} />
             <Route path="organization" element={<Organization />} />
             <Route path="employees" element={<Employees />} />
@@ -62,23 +77,7 @@ export default function App() {
             <Route path="attendance/locations" element={<OfficeLocations />} />
           </Route>
 
-          <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
-            <Route index element={<Navigate to="dashboard" replace />} />
-            <Route path="dashboard" element={<AdminDashboard />} />
-            <Route path="employees" element={<AdminEmployees />} />
-            <Route path="departments" element={<AdminDepartments />} />
-            <Route path="salary" element={<AdminSalary />} />
-          </Route>
-
-          {/* App Routes */}
-          <Route path="/app" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
-            <Route index element={<Navigate to="clock-in" replace />} />
-            <Route path="clock-in" element={<AppClockIn />} />
-            <Route path="oa" element={<AppOA />} />
-            <Route path="profile" element={<AppProfile />} />
-          </Route>
-
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<Navigate to="/app" replace />} />
         </Routes>
       </BrowserRouter>
     </ConfigProvider>

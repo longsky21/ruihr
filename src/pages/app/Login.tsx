@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useAuthStore } from '../store/useAuthStore';
-import api from '../lib/api';
+import { useAuthStore } from '../../store/useAuthStore';
+import api from '../../lib/api';
 import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
@@ -30,13 +30,8 @@ export default function Login() {
       const user = userRes.data;
       login(token, user);
       
-      // Redirect based on username or role
-      if (user.username === 'admin') {
-        // Prevent admin from logging in here if desired, or just redirect
-        navigate('/admin/dashboard');
-      } else {
-        navigate('/app/clock-in');
-      }
+      // Redirect to app clock-in page
+      navigate('/app/clock-in');
     } catch (err) {
       setError('用户名或密码错误');
     } finally {

@@ -6,8 +6,8 @@ export default function AppLayout() {
   const location = useLocation();
   
   const navItems = [
-    { path: '/app/clock-in', icon: <Clock size={24} />, label: '考勤打卡' },
-    { path: '/app/oa', icon: <CheckSquare size={24} />, label: 'OA审批' },
+    { path: '/app/clock-in', icon: <Clock size={24} />, label: '打卡' },
+    { path: '/app/oa', icon: <CheckSquare size={24} />, label: '审批' },
     { path: '/app/profile', icon: <User size={24} />, label: '我的' },
   ];
 
@@ -26,8 +26,8 @@ export default function AppLayout() {
                 location.pathname.startsWith(item.path) ? 'text-primary' : 'text-gray-500'
               }`}
             >
-              {item.icon}
-              <span className="text-xs">{item.label}</span>
+              {React.cloneElement(item.icon, { strokeWidth: 2.5 })}
+              <span className="text-xs font-medium">{item.label}</span>
             </Link>
           ))}
         </div>

@@ -334,8 +334,3 @@ class LeaveRequest(LeaveRequestBase):
 
     class Config:
         from_attributes = True
-    created_at: datetime
-    updated_at: datetime
-
-    class Config:
-        from_attributes = True
