@@ -4,6 +4,7 @@ import api from '../lib/api';
 interface User {
   id: number;
   username: string;
+  name?: string;
   status: number;
 }
 

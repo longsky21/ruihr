@@ -128,7 +128,7 @@ const Records: React.FC = () => {
           { title: '考勤管理' },
           { title: '打卡记录' },
         ]}
-        className="mb-4"
+        className="mb-4 font-bold text-lg"
       />
 
       <div className="mb-4 flex flex-wrap gap-4 items-center justify-between">

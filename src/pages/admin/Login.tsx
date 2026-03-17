@@ -42,10 +42,44 @@ export default function Login() {
   return (
     <div className="min-h-screen flex">
       {/* 左侧品牌区域 */}
-      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-600 to-blue-800 flex-col justify-center items-center text-white p-12">
-        <h1 className="text-4xl font-bold mb-4">RuiHR</h1>
-        <p className="text-lg text-white/90 text-center">智能人力资源管理系统</p>
-        <p className="text-white/80 text-center mt-2">高效管理，轻松办公</p>
+      <div className="hidden md:flex flex-1 bg-[linear-gradient(135deg,#001f3f,#0074D9)] flex-col justify-center items-center text-white p-8 relative overflow-hidden">
+        {/* 条纹背景 */}
+        <div className="absolute inset-0 z-0" style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.02) 20px, rgba(255,255,255,0.02) 40px)' }}></div>
+        
+        {/* Banner 背景图 */}
+        <div className="absolute inset-0 z-0 opacity-10 mix-blend-overlay">
+          <img src="/banner-ruihe.png" alt="Background" className="w-full h-full object-cover" />
+        </div>
+
+        {/* 随机光晕效果 */}
+        <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-white/10 rounded-full blur-[100px] animate-pulse"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-[#0074D9]/30 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-[20%] right-[10%] w-64 h-64 bg-cyan-400/10 rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-[30%] left-[10%] w-72 h-72 bg-blue-300/10 rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '3s' }}></div>
+        
+        {/* 内容区域 */}
+        <div className="relative z-10 text-center">
+          <div className="mb-8 relative inline-block">
+            {/* 装饰性图标 - 放置在上层与文字交叉 */}
+            <div className="absolute -top-32 -left-28 z-20 pointer-events-none opacity-80 mix-blend-overlay">
+               <img src="/banner-ruihe.png" alt="Icon" className="w-auto h-auto max-w-[600px]" />
+            </div>
+
+            <h1 className="text-7xl font-black tracking-tighter relative z-10" style={{ fontFamily: 'Georgia, serif', textShadow: '2px 2px 4px rgba(0,0,0,0.3)' }}>
+              RuiHR
+            </h1>
+            <div className="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/50 to-transparent"></div>
+          </div>
+          
+          <h2 className="text-2xl font-light tracking-[0.2em] mb-4 uppercase text-blue-100">
+            Smart HR System
+          </h2>
+          
+          <p className="text-lg text-white/80 font-light tracking-wide mt-8 border-t border-white/10 pt-8 max-w-md mx-auto leading-relaxed">
+            智能人力资源管理系统<br/>
+            <span className="text-sm text-white/60 mt-2 block">高效管理 · 轻松办公 · 数据驱动</span>
+          </p>
+        </div>
       </div>
       
       {/* 右侧登录表单 */}
@@ -71,7 +105,7 @@ export default function Login() {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all"
                 placeholder="请输入账号"
                 required
               />
@@ -82,7 +116,7 @@ export default function Login() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all"
                 placeholder="请输入密码"
                 required
               />
@@ -90,7 +124,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 bg-primary text-white rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all shadow-md active:scale-95 flex items-center justify-center"
+              className="w-full py-3 bg-gradient-to-r from-[#001f3f] to-[#0074D9] text-white rounded-lg font-medium hover:opacity-90 focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all shadow-md active:scale-95 flex items-center justify-center"
             >
               {isLoading ? (
                 <>
@@ -105,12 +139,6 @@ export default function Login() {
               )}
             </button>
           </form>
-          
-          <div className="mt-6 text-center">
-            <a href="#" className="text-blue-500 hover:text-blue-700 text-sm">
-              没有账号？立即注册
-            </a>
-          </div>
         </div>
       </div>
     </div>

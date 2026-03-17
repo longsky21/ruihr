@@ -27,26 +27,47 @@ const PCLayout: React.FC = () => {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider trigger={null} collapsible collapsed={collapsed} theme="light" className="shadow-md z-10">
-        <div className="h-16 flex items-center justify-center border-b border-gray-100">
-          <h1 className={`font-bold text-xl text-primary transition-all duration-300 ${collapsed ? 'scale-0 w-0' : 'scale-100 w-auto'}`}>
+      <Sider 
+        trigger={null} 
+        collapsible 
+        collapsed={collapsed} 
+        className="shadow-md z-10"
+        style={{ background: '#1e3a8a' }}
+      >
+        <style>
+          {`
+            .ant-menu-dark .ant-menu-sub, 
+            .ant-menu.ant-menu-dark .ant-menu-sub {
+              background: #1e3a8a !important;
+            }
+            .ant-menu-dark .ant-menu-item, 
+            .ant-menu-dark .ant-menu-submenu-title {
+              margin: 8px !important;
+              width: calc(100% - 16px) !important;
+              border-radius: 12px !important;
+            }
+          `}
+        </style>
+        <div className="h-16 flex items-center justify-center border-b border-white/10">
+          <h1 className={`font-bold text-xl text-white transition-all duration-300 ${collapsed ? 'scale-0 w-0' : 'scale-100 w-auto'}`} style={{ fontFamily: 'Georgia, serif' }}>
             RuiHR
           </h1>
         </div>
         <Menu
-          theme="light"
+          theme="dark"
           mode="inline"
+          style={{ background: '#1e3a8a', borderRight: 0 }}
           selectedKeys={[location.pathname]}
           defaultOpenKeys={['attendance']}
           onClick={({ key }) => navigate(key)}
           items={[
             {
-              key: '/pc/organization',
+              key: '/admin/organization',
               icon: <ApartmentOutlined />,
               label: '组织架构',
             },
             {
-              key: '/pc/employees',
+              key: '/admin/employees',
               icon: <TeamOutlined />,
               label: '员工管理',
             },
@@ -56,15 +77,15 @@ const PCLayout: React.FC = () => {
               label: '考勤管理',
               children: [
                 {
-                  key: '/pc/attendance/records',
+                  key: '/admin/attendance/records',
                   label: '打卡记录',
                 },
                 {
-                  key: '/pc/attendance/report',
+                  key: '/admin/attendance/report',
                   label: '考勤月报',
                 },
                 {
-                  key: '/pc/attendance/locations',
+                  key: '/admin/attendance/locations',
                   label: '打卡区域',
                 },
               ],

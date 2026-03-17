@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Tree, Button, Input, Drawer, Descriptions, Tag, message, Spin, Empty, Form, Select, DatePicker, Space, Modal } from 'antd';
+import { Tree, Button, Input, Drawer, Descriptions, Tag, message, Spin, Empty, Form, Select, DatePicker, Space, Modal, Breadcrumb } from 'antd';
 import { ImportOutlined, ReloadOutlined, EditOutlined, SaveOutlined, CloseOutlined, PlusOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import api from '../../lib/api';
 import dayjs from 'dayjs';
@@ -249,15 +249,18 @@ const Organization: React.FC = () => {
   };
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="mb-4 flex justify-between items-center">
-        <h2 className="text-xl font-bold text-gray-800">组织架构</h2>
-        <div className="space-x-2">
+    <div className="h-full flex flex-col p-4">
+      <Breadcrumb
+        items={[
+          { title: '组织架构' },
+        ]}
+        className="mb-4 font-bold text-lg"
+      />
+      <div className="mb-4 flex justify-end space-x-2">
             <Button icon={<ReloadOutlined />} onClick={fetchTree}>刷新</Button>
             <Button type="primary" icon={<ImportOutlined />} loading={importing} onClick={handleImport}>
             导入
             </Button>
-        </div>
       </div>
 
       <div className="flex-1 bg-white rounded-lg border border-gray-100 flex overflow-hidden">

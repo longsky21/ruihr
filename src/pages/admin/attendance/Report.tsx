@@ -120,7 +120,7 @@ const Report: React.FC = () => {
           { title: '考勤管理' },
           { title: '考勤月报' },
         ]}
-        className="mb-4"
+        className="mb-4 font-bold text-lg"
       />
       <div className="mb-4 flex flex-wrap gap-2 items-center justify-between">
         <div className="flex flex-wrap gap-2">

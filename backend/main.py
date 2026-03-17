@@ -22,9 +22,15 @@ origins = [
     "http://127.0.0.1:5174",
     "http://192.168.31.209:5174",
     "https://192.168.31.209:5174",
+    "http://192.168.31.209:5173",
+    "https://192.168.31.209:5173",
     "http://localhost:8000",
     "http://localhost:8001",
     "http://localhost:8003",
+    "https://dm.longsky21.top",
+    "http://dm.longsky21.top",
+    "https://mysql.longsky21.top:5173",
+    "http://mysql.longsky21.top:5173"
 ]
 
 app.add_middleware(

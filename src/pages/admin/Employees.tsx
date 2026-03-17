@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Input, Space, Tag, message, TreeSelect, DatePicker, Pagination, Modal, Form, Select, Row, Col, Drawer, Popconfirm } from 'antd';
+import { Table, Button, Input, Space, Tag, message, TreeSelect, DatePicker, Pagination, Modal, Form, Select, Row, Col, Drawer, Popconfirm, Breadcrumb } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { ImportOutlined, SearchOutlined, ReloadOutlined, UserAddOutlined, ClearOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import api from '../../lib/api';
@@ -103,18 +103,21 @@ const Employees: React.FC = () => {
         ...params
       };
       
-      const res = await api.get('/employees', { params: searchParams });
-      setData(res.data);
-      
-      const countRes = await api.get('/employees/count', { 
+      const [listRes, countRes] = await Promise.all([
+        api.get('/employees', { params: searchParams }),
+        api.get('/employees/count', { 
           params: {
             department_id: searchParams.department_id,
             keyword: searchParams.keyword,
             hire_date: searchParams.hire_date
           } 
-      });
+        })
+      ]);
+      
+      setData(listRes.data);
       setPagination(prev => ({ ...prev, total: countRes.data }));
     } catch (error) {
+      console.error('Fetch error:', error);
       message.error('获取员工列表失败');
     } finally {
       setLoading(false);
@@ -361,10 +364,14 @@ const Employees: React.FC = () => {
   ];
 
   return (
-    <div className="h-full flex flex-col">
-       <div className="mb-4 flex justify-between items-center">
-        <h2 className="text-xl font-bold text-gray-800">员工管理</h2>
-        <div className="space-x-2">
+    <div className="h-full flex flex-col p-4">
+      <Breadcrumb
+        items={[
+          { title: '员工管理' },
+        ]}
+        className="mb-4 font-bold text-lg"
+      />
+      <div className="mb-4 flex justify-end space-x-2">
              <Button icon={<ReloadOutlined />} onClick={() => fetchEmployees()}>刷新</Button>
             <Button type="primary" icon={<ImportOutlined />} loading={importing} onClick={handleImport}>
               批量导入
@@ -372,7 +379,6 @@ const Employees: React.FC = () => {
             <Button type="primary" icon={<UserAddOutlined />} onClick={handleCreate}>
               新增员工
             </Button>
-        </div>
       </div>
 
       <div className="bg-white p-4 rounded-lg border border-gray-100 mb-4">

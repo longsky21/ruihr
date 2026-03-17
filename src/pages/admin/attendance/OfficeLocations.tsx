@@ -125,10 +125,10 @@ const OfficeLocations: React.FC = () => {
           { title: '考勤管理' },
           { title: '打卡区域' },
         ]}
-        className="mb-4"
+        className="mb-4 font-bold text-lg"
       />
 
-      <div className="mb-4">
+      <div className="mb-4 flex justify-end">
         <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
           新增办公地点
         </Button>
